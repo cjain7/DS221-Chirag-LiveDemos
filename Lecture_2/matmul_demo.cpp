@@ -24,6 +24,7 @@ void matmul_naive(const std::vector<double> &A,
 }
 
 int main(int argc, char** argv) {
+    
     int N = 2000; // dimension of our NxN dense matrix
 
     std::cout << "\033[1m" << "Matrix multiplication demo with N=" << N << "\033[0m" << std::endl;
@@ -44,11 +45,11 @@ int main(int argc, char** argv) {
         matmul_naive(A, B, C, N);
         auto end = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> elapsed = end - start;
-        std::cout << "\033[1m" << "Naïve multiplication time: " << elapsed.count() << " secods" << "\033[0m" << std::endl;
+        std::cout << "\033[1m" << "Naïve multiplication time: " << elapsed.count() << " seconds" << "\033[0m" << std::endl;
     }
 
     // Verify correctness roughly
-    std::cout << "C[0,0] = " << C[0] << "  (first element in output matrix C)\n";
+    std::cout << "C[0,0] = " << C[0] << "  (first element in output matrix)\n";
 
     // --- Using BLAS library ---
     {
@@ -64,9 +65,8 @@ int main(int argc, char** argv) {
     }
 
     // Verify correctness roughly
-    // This is not the ideal way to check correctness
-    std::cout << "C[0,0] = " << C[0] << "  (first element in output matrix C)\n";
+    // Obviously, this is not the ideal way to check correctness
+    std::cout << "C[0,0] = " << C[0] << "  (first element in output matrix)\n";
 
     return 0;
 }
-
