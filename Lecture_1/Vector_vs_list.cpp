@@ -46,10 +46,8 @@ int main() {
     (2) In practice, appending is faster in array (vector) than linked list by an order of magnitude
     (3) Memory reallocation in vector is rare (logarithmic number of times due to the size doubling method)
     (4) In linked list, memory allocation is done once for every new node insertion 
-    (5) Modern CPUs use write-back caches, the newly appended number is written into cache only (not RAM). 
-        After writing into cache, the cache line is marked dirty. 
-        The data is written back to RAM later, when the cache line is evicted. 
-        Therefore, when we use array (vector), writes to RAM happen in batches after a cache line eviction.
-    (6) In linked list, each new node leads to a cache miss due to poor memory locality
+    (5) Modern CPUs typically use write-back caches. When a vector element is written, the corresponding cache line is modified in the cache and marked dirty rather than immediately being written to DRAM. 
+    
+    Since vector elements are contiguous, multiple appended elements can modify the same cache line. Dirty cache lines are eventually propagated to lower levels of the memory hierarchy and, when necessary, to DRAM. Thus, vector writes can be efficiently grouped at the cache-line level.
     */
 }
