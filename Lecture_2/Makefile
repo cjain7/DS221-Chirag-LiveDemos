@@ -1,3 +1,6 @@
+#Written for MAC OS
+#Assumes openblas and gcc installed
+
 CXX = g++
 CXXFLAGS = -O3 -std=c++11 -I/opt/homebrew/opt/openblas/include
 LDFLAGS = -L/opt/homebrew/opt/openblas/lib -framework Accelerate
