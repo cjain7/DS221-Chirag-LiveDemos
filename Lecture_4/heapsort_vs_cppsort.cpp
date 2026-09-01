@@ -8,10 +8,10 @@
 
 // Heap sort using priority_queue
 void heapSort(std::vector<int>& arr) {
-  // Max heap
-  std::priority_queue<int> pq;
+  // Min heap
+  std::priority_queue<int, std::vector<int>, std::greater<int>> pq;
   for (int x : arr) pq.push(x);
-  for (int i = arr.size() - 1; i >= 0; i--) {
+  for (int i = 0; i < arr.size(); i++) {
     arr[i] = pq.top();
     pq.pop();
   }
@@ -40,6 +40,9 @@ int main() {
     std::sort(arr2.begin(), arr2.end());
     end = std::chrono::high_resolution_clock::now();
     double t2 = std::chrono::duration<double>(end - start).count();
+
+    //Sanity check
+    //std::cout << arr1[0] << " " << arr2[0] << "\n";
 
     std::cout << "n=" << n
       << " | heapsort=" << std::fixed << std::setprecision(4) << t1 << "s"
