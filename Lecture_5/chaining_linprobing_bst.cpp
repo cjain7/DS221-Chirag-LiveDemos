@@ -6,6 +6,7 @@
 #include <chrono>
 #include <random>
 #include <cmath>
+#include <unordered_set>
 using namespace std;
 using namespace std::chrono;
 
@@ -74,11 +75,10 @@ struct BSTNode {
 class BST {
     BSTNode* root = nullptr;
 
-    BSTNode* insertNode(BSTNode* node, int key) {
-        if (!node) return new BSTNode(key);
-        if (key < node->key) node->left = insertNode(node->left, key);
-        else node->right = insertNode(node->right, key);
-        return node;
+    void insertNode(BSTNode*& node, int key) {
+        if (!node) node = new BSTNode(key);
+        else if (key < node->key) insertNode(node->left, key);
+        else insertNode(node->right, key);
     }
 
     bool searchNode(BSTNode* node, int key) {
@@ -89,7 +89,7 @@ class BST {
 
 public:
     void insert(int key) {
-        root = insertNode(root, key);
+        insertNode(root, key);
     }
 
     bool search(int key) {
@@ -102,20 +102,33 @@ int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
-    const int N = 20000000;   // number of keys
+    const int N = 15000000;   // number of keys
     const int M = 30000000;   // table capacity 
-                              // capacity determines load factor
 
-    // Generate random keys
+    //const int M = 16000000; // Use this for increasing load factor
+
     vector<int> keys(N);
 
-    //rand() generates pseudo-random integers
-    for (int i = 0; i < N; i++) keys[i] = rand();
-
-    // Create independent search order
-    vector<int> searchKeys = keys;
     mt19937 rng(42);
+    uniform_int_distribution<int> dist(0, 1000000000);
+    unordered_set<int> used;  // store unique elements
+
+    //Generate unique keys from the given distribution
+    for (int i = 0; i < N; ) {
+      int k = dist(rng);
+
+      auto ret = used.insert(k);
+      if (ret.second)  //implies insertion to the set was successful
+      {
+        keys[i++] = k;
+      }
+    }
+
+    // Create a search order by shuffling the same set of keys
+    vector<int> searchKeys = keys;
     shuffle(searchKeys.begin(), searchKeys.end(), rng);
+
+    cout << "List of random keys and their search order is initialized" << endl;
 
     // ===== Linear Probing =====
     HashTableLinear htLinear(M);
@@ -124,14 +137,14 @@ int main() {
     for (int k : keys) htLinear.insert(k);
     auto end = high_resolution_clock::now();
     cout << "Linear probing insertion time: "
-         << duration_cast<milliseconds>(end - start).count() << " ms\n";
+         << duration_cast<milliseconds>(end - start).count() << " ms" << endl;
 
     start = high_resolution_clock::now();
     int found = 0;
     for (int k : searchKeys) if (htLinear.search(k)) found++;
     end = high_resolution_clock::now();
     cout << "Linear probing search time: "
-         << duration_cast<nanoseconds>(end - start).count() << " ns\n";
+         << duration_cast<milliseconds>(end - start).count() << " ms, found = " << found << endl;
 
     // ===== Chaining =====
     HashTableChaining htChain(M);
@@ -140,14 +153,14 @@ int main() {
     for (int k : keys) htChain.insert(k);
     end = high_resolution_clock::now();
     cout << "Chaining insertion time: "
-         << duration_cast<milliseconds>(end - start).count() << " ms\n";
+         << duration_cast<milliseconds>(end - start).count() << " ms" << endl;
 
     start = high_resolution_clock::now();
     found = 0;
     for (int k : searchKeys) if (htChain.search(k)) found++;
     end = high_resolution_clock::now();
     cout << "Chaining search time: "
-         << duration_cast<nanoseconds>(end - start).count() << " ns\n";
+         << duration_cast<milliseconds>(end - start).count() << " ms, found = " << found << endl;
 
     // ===== Binary Search Tree =====
     BST bst;
@@ -155,14 +168,14 @@ int main() {
     for (int k : keys) bst.insert(k);
     end = high_resolution_clock::now();
     cout << "BST insertion: "
-         << duration_cast<milliseconds>(end - start).count() << " ms\n";
+         << duration_cast<milliseconds>(end - start).count() << " ms" << endl;
 
     start = high_resolution_clock::now();
     found = 0;
     for (int k : searchKeys) if (bst.search(k)) found++;
     end = high_resolution_clock::now();
     cout << "BST search: "
-         << duration_cast<nanoseconds>(end - start).count() << " ns\n";
+         << duration_cast<milliseconds>(end - start).count() << " ms, found = " << found << endl;
 
     return 0;
 }
