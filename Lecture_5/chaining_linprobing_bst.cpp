@@ -126,6 +126,11 @@ int main() {
 
     // Create a search order by shuffling the same set of keys
     vector<int> searchKeys = keys;
+
+    // Modify search keys to include unsuccessful searches
+    //for (int i=0; i<N; i++)
+      //searchKeys[i] = searchKeys[i] + 1;
+
     shuffle(searchKeys.begin(), searchKeys.end(), rng);
 
     cout << "List of random keys and their search order is initialized" << endl;
@@ -144,7 +149,8 @@ int main() {
     for (int k : searchKeys) if (htLinear.search(k)) found++;
     end = high_resolution_clock::now();
     cout << "Linear probing search time: "
-         << duration_cast<milliseconds>(end - start).count() << " ms, found = " << found << endl;
+         << duration_cast<milliseconds>(end - start).count() 
+         << " ms, found = " << found << " out of " << searchKeys.size() << endl;
 
     // ===== Chaining =====
     HashTableChaining htChain(M);
@@ -160,7 +166,8 @@ int main() {
     for (int k : searchKeys) if (htChain.search(k)) found++;
     end = high_resolution_clock::now();
     cout << "Chaining search time: "
-         << duration_cast<milliseconds>(end - start).count() << " ms, found = " << found << endl;
+         << duration_cast<milliseconds>(end - start).count()
+         << " ms, found = " << found << " out of " << searchKeys.size() << endl;
 
     // ===== Binary Search Tree =====
     BST bst;
@@ -175,7 +182,8 @@ int main() {
     for (int k : searchKeys) if (bst.search(k)) found++;
     end = high_resolution_clock::now();
     cout << "BST search: "
-         << duration_cast<milliseconds>(end - start).count() << " ms, found = " << found << endl;
+         << duration_cast<milliseconds>(end - start).count()
+         << " ms, found = " << found << " out of " << searchKeys.size() << endl;
 
     return 0;
 }
