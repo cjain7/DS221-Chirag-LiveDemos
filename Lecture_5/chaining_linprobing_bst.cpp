@@ -103,7 +103,8 @@ int main() {
     cin.tie(nullptr);
 
     const int N = 20000000;   // number of keys
-    const int M = 30000000;   // table capacity (for low load factor)
+    const int M = 30000000;   // table capacity 
+                              // capacity determines load factor
 
     // Generate random keys
     vector<int> keys(N);
