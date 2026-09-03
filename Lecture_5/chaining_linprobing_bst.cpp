@@ -64,7 +64,7 @@ public:
     }
 };
 
-// ================== Binary Search Tree (unbalanced) ==================
+// ========== Binary Search Tree (implemented with no mechanism to self-balance) =========
 struct BSTNode {
     int key;
     BSTNode *left, *right;
@@ -103,11 +103,18 @@ int main() {
     cin.tie(nullptr);
 
     const int N = 20000000;   // number of keys
-    const int M = 30000000;   // table size (for low load factor)
+    const int M = 30000000;   // table capacity (for low load factor)
 
     // Generate random keys
     vector<int> keys(N);
+
+    //rand() generates pseudo-random integers
     for (int i = 0; i < N; i++) keys[i] = rand();
+
+    // Create independent search order
+    vector<int> searchKeys = keys;
+    mt19937 rng(42);
+    shuffle(searchKeys.begin(), searchKeys.end(), rng);
 
     // ===== Linear Probing =====
     HashTableLinear htLinear(M);
@@ -120,7 +127,7 @@ int main() {
 
     start = high_resolution_clock::now();
     int found = 0;
-    for (int k : keys) if (htLinear.search(k)) found++;
+    for (int k : searchKeys) if (htLinear.search(k)) found++;
     end = high_resolution_clock::now();
     cout << "Linear probing search time: "
          << duration_cast<nanoseconds>(end - start).count() << " ns\n";
@@ -136,7 +143,7 @@ int main() {
 
     start = high_resolution_clock::now();
     found = 0;
-    for (int k : keys) if (htChain.search(k)) found++;
+    for (int k : searchKeys) if (htChain.search(k)) found++;
     end = high_resolution_clock::now();
     cout << "Chaining search time: "
          << duration_cast<nanoseconds>(end - start).count() << " ns\n";
@@ -151,7 +158,7 @@ int main() {
 
     start = high_resolution_clock::now();
     found = 0;
-    for (int k : keys) if (bst.search(k)) found++;
+    for (int k : searchKeys) if (bst.search(k)) found++;
     end = high_resolution_clock::now();
     cout << "BST search: "
          << duration_cast<nanoseconds>(end - start).count() << " ns\n";
