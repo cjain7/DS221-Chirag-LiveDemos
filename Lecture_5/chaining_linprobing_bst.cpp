@@ -99,8 +99,6 @@ public:
 
 // ================== Performance Test ==================
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
 
     const int N = 15000000;   // number of keys
     const int M = 30000000;   // table capacity 
