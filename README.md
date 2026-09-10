@@ -1,0 +1,1 @@
+The code in this repository is intended to empirically evaluate and demonstrate some of the concepts covered in DS221: Introduction to Scalable Systems. The code has been developed with AI assistance.
