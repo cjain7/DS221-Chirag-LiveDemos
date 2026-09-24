@@ -7,23 +7,33 @@ using namespace std;
 using namespace std::chrono;
 
 // ---------------- 2-Way Merge Sort ----------------
-void merge2(vector<int>& arr, int left, int mid, int right) {
-    int n1 = mid - left + 1, n2 = right - mid;
-    vector<int> L(arr.begin() + left, arr.begin() + mid + 1);
-    vector<int> R(arr.begin() + mid + 1, arr.begin() + right + 1);
-    int i = 0, j = 0, k = left;
-    while(i < n1 && j < n2)
-        arr[k++] = (L[i] <= R[j]) ? L[i++] : R[j++];
-    while(i < n1) arr[k++] = L[i++];
-    while(j < n2) arr[k++] = R[j++];
+void merge2(vector<int>& arr, vector<int>& temp, int left, int mid, int right) {
+    int i = left;
+    int j = mid + 1;
+    int k = left;
+
+    while (i <= mid && j <= right) {
+        if (arr[i] <= arr[j])
+            temp[k++] = arr[i++];
+        else
+            temp[k++] = arr[j++];
+    }
+
+    while (i <= mid)
+        temp[k++] = arr[i++];
+    while (j <= right)
+        temp[k++] = arr[j++];
+
+    for (int i = left; i <= right; ++i)
+        arr[i] = temp[i];
 }
 
-void mergeSort2(vector<int>& arr, int left, int right) {
+void mergeSort2(vector<int>& arr, int left, int right, vector<int>& temp) {
     if(left < right) {
         int mid = left + (right - left)/2;
-        mergeSort2(arr, left, mid);
-        mergeSort2(arr, mid+1, right);
-        merge2(arr, left, mid, right);
+        mergeSort2(arr, left, mid, temp);
+        mergeSort2(arr, mid+1, right, temp);
+        merge2(arr, temp, left, mid, right); 
     }
 }
 
@@ -126,26 +136,27 @@ int main() {
 
     // --- 2-Way Merge Sort ---
     vector<int> arr2 = arr;
+    vector<int> temp(n);
     auto start = high_resolution_clock::now();
-    mergeSort2(arr2, 0, n-1);
+    mergeSort2(arr2, 0, n-1, temp);
     auto end = high_resolution_clock::now();
     cout << "2-way merge sort time: " 
          << duration_cast<milliseconds>(end-start).count() << " ms\n";
 
     // --- 10-Way Merge Sort ---
     vector<int> arr10 = arr;
-    vector<int> temp(n);
+    vector<int> temp2(n);
     start = high_resolution_clock::now();
-    mergeSort10(arr10, 0, n-1, temp);
+    mergeSort10(arr10, 0, n-1, temp2);
     end = high_resolution_clock::now();
     cout << "10-way merge sort time: " 
          << duration_cast<milliseconds>(end-start).count() << " ms\n";
 
     // --- 100-Way Merge Sort ---
     vector<int> arr100 = arr;
-    vector<int> temp2(n);
+    vector<int> temp3(n);
     start = high_resolution_clock::now();
-    mergeSort100(arr100, 0, n-1, temp2);
+    mergeSort100(arr100, 0, n-1, temp3);
     end = high_resolution_clock::now();
     cout << "100-way merge sort time: " 
          << duration_cast<milliseconds>(end-start).count() << " ms\n";
